@@ -1,0 +1,48 @@
+FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+
+# Install core dependencies
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y nano
+RUN apt-get install -y wget
+RUN apt-get install -y libsm6 libxrender-dev libxext6
+RUN apt-get install -y libgtk3.0
+RUN apt-get install -y python-tk
+
+# Install Python 2
+RUN apt-get update \
+  && apt-get install -y python-pip python2.7-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python python \
+  && pip install --upgrade pip
+
+# Install project specific dependencies
+RUN pip install tensorflow-gpu
+RUN pip install keras
+RUN pip install opencv-python scipy pandas scikit-image
+RUN pip install tqdm
+
+# Install PyDev
+ARG pydev_source=http://www.mediafire.com/file/gsnj9yd5bt8jwdr/liclipse_4.5.3_linux.gtk.x86_64.tar.gz
+ARG pydev_local_dir=.PyDev4.5.3
+
+RUN mkdir /opt/pydev
+WORKDIR /opt/pydev
+
+ADD $pydev_source /opt/pydev/installer.tgz
+
+RUN tar --strip-components=1 -xzf installer.tgz && rm installer.tgz
+
+# Add user
+RUN useradd -ms /bin/bash developer
+USER developer
+ENV HOME /home/developer
+
+RUN mkdir /home/developer/.eclipse \
+  && ln -sf /home/developer/.eclipse /home/developer/$pydev_local_dir
+
+# Set display for GUI support
+ENV DISPLAY :0
+
+# Run PyDev
+CMD [ "/opt/pydev/LiClipse" ]

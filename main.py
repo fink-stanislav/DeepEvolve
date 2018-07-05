@@ -7,13 +7,11 @@ from tqdm import tqdm
 
 import logging
 
-import sys
-
 # Setup logging.
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p',
-    level=logging.INFO#,
+    level=logging.DEBUG#,
     #filename='log.txt'
 )
 
@@ -116,7 +114,7 @@ def main():
     population = 30 # Number of networks/genomes in each generation.
     #we only need to train the new ones....
     
-    ds = 4
+    ds = 3
 
     if(   ds == 1):
         dataset = 'mnist_mlp'
@@ -176,7 +174,7 @@ def main():
     # 6th value reserved for dense layer
     nb_neurons = all_possible_genes['nb_neurons']
     for i in range(1,7):
-      all_possible_genes['nb_neurons_' + str(i)] = nb_neurons
+        all_possible_genes['nb_neurons_' + str(i)] = nb_neurons
     # remove old value from dict
     all_possible_genes.pop('nb_neurons')
             

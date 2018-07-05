@@ -1,0 +1,24 @@
+FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+
+# Install core dependencies
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y nano
+RUN apt-get install -y wget
+RUN apt-get install -y libsm6 libxrender-dev libxext6
+
+# Install Python 2
+RUN apt-get update \
+  && apt-get install -y python-pip python2.7-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python python \
+  && pip install --upgrade pip
+
+# Install project specific dependencies
+RUN pip install tensorflow-gpu
+RUN pip install keras
+RUN pip install opencv-python scipy pandas scikit-image
+RUN pip install tqdm
+
+WORKDIR "/root"
+CMD ["/bin/bash"]
